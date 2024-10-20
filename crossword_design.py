@@ -1,5 +1,6 @@
 import copy
 from typing import List
+from word import Word
 
 def main():
     # 2D array; row 0 is ACROSS, row 1 is DOWN
@@ -37,7 +38,7 @@ def recursive_backtracking(assignment: List[str], csp):
                 orientation = 'across'
             else:
                 orientation = 'down'
-            meets_constraints = try_insert(word, csp, orientation)
+            meets_constraints = try_insert(word, csp, var_index[1], orientation)
             if meets_constraints:
                 assignment[i] = word
                 result = recursive_backtracking(assignment, csp)
@@ -56,7 +57,8 @@ def select_unassigned_variable(variables):
                 return (i, j)
 
 
-def try_insert(word, csp, orientation):
+def try_insert(word, csp, number, orientation):
+    if orientation == 'across':
 
 
 
