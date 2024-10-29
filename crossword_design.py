@@ -3,26 +3,26 @@ from typing import List
 from word import Word
 from puzzle import Puzzle
 from typing import List
+import domain_split as ds
 
 def main():
-    the_puzzle = Puzzle(6,5)
+    the_puzzle = Puzzle(11, 12)
 
-    word_list = [None] * 6
-    word_list[0] = [] # used words
+    word_list = ds.split_words("docs/Words.txt")
 
-    word_list[3] = ["AFT", "ALE", "EEL", "LEE", "TIE"]
-    word_list[4] = ["HEEL", "HIKE", "KEEL", "KNOT", "LINE"]
-    word_list[5] = ["HOSES", "LASER", "SAILS", "SHEET", "STEER"]
-
-    variables = [None] * 8
-    variables[0] = Word(1, 0, (0, 0), 5)
-    variables[1] = Word(2, 1, (0, 2), 5)
-    variables[2] = Word(3, 1, (0, 4), 5)
-    variables[3] = Word(4, 0, (2, 1), 4)
-    variables[4] = Word(5, 1, (2, 3), 4)
-    variables[5] = Word(6, 1, (3, 0), 3)
-    variables[6] = Word(7, 0, (3, 2), 3)
-    variables[7] = Word(8, 0, (4, 0), 5)
+    variables = [None] * 12
+    variables[0] = Word(1, 0, (0, 2), 7)
+    variables[1] = Word(2, 1, (0, 8), 4)
+    variables[2] = Word(3, 1, (1, 11), 6)
+    variables[3] = Word(4, 0, (3, 5), 5)
+    variables[4] = Word(5, 1, (3, 7), 6)
+    variables[5] = Word(6, 1, (5, 4), 6)
+    variables[6] = Word(7, 0, (5, 7), 5)
+    variables[7] = Word(8, 1, (5, 9), 6)
+    variables[8] = Word(9, 1, (7, 1), 4)
+    variables[9] = Word(10, 0, (7, 3), 5)
+    variables[10] = Word(11, 0, (9, 0), 6)
+    variables[11] = Word(1, 1, (0, 2), 5)
 
     solution = recursive_backtracking(variables, the_puzzle, word_list)
 
