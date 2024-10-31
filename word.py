@@ -1,4 +1,14 @@
+from __future__ import annotations
+
+
 from typing import Tuple
+from typing import List
+
+class Constraint:
+    def __init__(self, other_word: Word, index_self: int, index_other: int):
+        self.other_word = other_word
+        self.index_self = index_self
+        self.index_other = index_other
 
 
 class Word:
@@ -9,12 +19,14 @@ class Word:
         start_location: Tuple[int, int],
         length: int,
         letters: str = None,
+        domain: List[str] = None,
     ):
         self.number = number
         self.orientation = orientation
         self.start_location = start_location
         self.length = length
         self.letters = letters
+        self.constraints = []
     
     def __str__(self):
         output = ""
