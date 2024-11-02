@@ -1,25 +1,45 @@
 from word import Word, Constraint
 from typing import List
+import re
 
 def read_variables(filepath: str):
     variables = []
     with open(filepath) as variable_file:
+        mode = "Variables"
+
         for line in variable_file:
-            if line[0] in ("[", " ", "\n"):
+            if line[0] in (" ", "\n"):
+                continue
+        
+            title_match = re.search(r'\[(\w+)\]', line)
+            if title_match:
+                title = title_match.group(1)
+                if title == "Letters":
+                    mode = "Letters"
+                else:
+                    mode = "Variables"
                 continue
             
             char_params = line.strip().split(',')
             params = []
+
+            if mode == "Variables":
+                for char in char_params:
+                    params.append(int(char))
+
+
+                start_loc = (params[2], params[3])
+
+                new_variable = Word(params[0], params[1], start_loc, params[4])
             
-            for char in char_params:
-                params.append(int(char))
+            elif mode == "Letters":
+                start_loc = (int(char_params[0]), int(char_params[1]))
+                
+                new_variable = Word(0, 0, start_loc, 1, char_params[2])
 
-
-            start_loc = (params[2], params[3])
-
-            new_variable = Word(params[0], params[1], start_loc, params[4])
-
+            
             variables.append(new_variable)
+
 
         sorted_variables = sorted(variables, key=lambda var: (var.number, var.orientation))
     

@@ -6,18 +6,27 @@ from typing import List
 import domain_split as ds
 from visualizer import Visualizer
 import file_processor as fp
+import random as rand
 
 letter_frequencies = [43.31, 10.56, 23.14, 17.25, 56.88, 9.24, 12.59, 15.31, 38.45, 1.00, 5.61, 27.98, 15.36, 33.92, 36.51, 16.14, 1.00, 38.64, 29.23, 35.43, 18.51, 5.13, 6.57, 1.48, 9.06, 1.39]
 
 def main():
     the_puzzle = Puzzle(11, 12)
 
-    word_list = ds.split_words("docs/Words.txt")
+    word_list = ds.split_words("docs/words/words.txt")
 
-    variables = fp.read_variables("docs/puzzle3.txt")
+    variables = fp.read_variables("docs/puzzles/heart.txt")
+    # predetermined_n = Word(34, 0, (10, 5), 1, 'n')
+    # predetermined_t = Word(35, 0, (10, 6), 1, 't')
+    # predetermined_h = Word(36, 0, (10, 7), 1, 'h')
+
+    # variables.append(predetermined_n)
+    # variables.append(predetermined_t)
+    # variables.append(predetermined_h)
+
     fp.generate_constraints(variables)
 
-    for variable in variables:
+    for variable in (v for v in variables if v.letters == None):
         domain_index = variable.length
         variable_domain = word_list[domain_index][:]
 
@@ -44,6 +53,15 @@ def main():
 
         variable.domain = sorted_variable_domain
 
+    # for variable in variables:
+    #     if variable.letters != None:
+    #         for constraint in variable.constraints:
+    #             other_word = constraint.other_word
+    #             if other_word.letters == None:
+    #                 other_word.domain = update_other_domain(variable.letters, constraint)
+    #                 print(other_word)
+    #                 print(other_word.domain)
+
         # print(f"The 10 highest scoring words in the domain of {variable}")
         # print("-------------------------------------------------------------------------")
         # for string in variable.domain[:10]:
@@ -61,10 +79,10 @@ def main():
     if solution != "Failure" and solution != None:
         print("Solution found!")
     else:
-        print("Failed. Uh oh...")
+        print("Failure! All assignments exhausted, but no solution was found.")
         return
 
-    visualizer = Visualizer(solution, 12, 13)
+    visualizer = Visualizer(solution)
     print(visualizer)
 
     # for word in solution:

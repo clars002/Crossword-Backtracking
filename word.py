@@ -33,6 +33,7 @@ class Word:
         self.length = length
         self.letters = letters
         self.constraints = []
+        self.domain = domain
     
     def __str__(self):
         output = ""
