@@ -4,87 +4,100 @@ from typing import Callable, List
 
 from word import Constraint, Word
 
-letter_frequencies = [
-    43.31,
-    10.56,
-    23.14,
-    17.25,
-    56.88,
-    9.24,
-    12.59,
-    15.31,
-    38.45,
-    1.00,
-    5.61,
-    27.98,
-    15.36,
-    33.92,
-    36.51,
-    16.14,
-    1.00,
-    38.64,
-    29.23,
-    35.43,
-    18.51,
-    5.13,
-    6.57,
-    1.48,
-    9.06,
-    1.39,
-]
-
 
 class RecursiveBacktracker:
-    def __init__(self, heuristic: str = "mrv", forward_checking: bool = True):
+    def __init__(
+        self,
+        heuristic: str = "mrv",
+        forward_checking: bool = True,
+        used_values: List[Word] = None,
+    ):
         self.heuristic = heuristic
         self.forward_checking = forward_checking
         self.select_unassigned_variable = RecursiveBacktracker._get_selection_function(
             heuristic
         )
+        self.used_values = (
+            used_values if used_values is not None else []
+        )  # ChatGPT line to fix a bug
+        self.dead_ends_avoided = 0
+        self.recursive_calls = 0
+        self.values_tried = 0
 
-    def recursive_backtracking(self, assignment: List[Word], used_values: List[str]):
+    def __str__(self):
+        output = f"Stats:\n"
+        output += (
+            f"--------------------------------------------------------------------\n"
+        )
+        output += f"Detected and avoided {self.dead_ends_avoided} dead ends.\n"
+        output += f"Executed {self.recursive_calls} recursive calls.\n"
+        output += f"Tried a total of {self.values_tried} values."
+        return output
+
+    def recursive_backtracking(self, assignment: List[Word]):
+        self.recursive_calls += 1
+
         if RecursiveBacktracker._is_complete(assignment):
             return assignment
 
         var = self.select_unassigned_variable(assignment)
 
-        for value in (v for v in var.domain if v not in used_values):  # ChatGPT line
+        for value in (
+            v for v in var.domain if v not in self.used_values
+        ):  # ChatGPT line
+            self.values_tried += 1
+
             dead_end = False
 
             if RecursiveBacktracker._satisfies_constraints(value, var):
-                old_domains = []
-                new_domains = []
-                for constraint in var.constraints:
-                    other_word = constraint.other_word
-                    if constraint.other_word.letters == None:
-                        updated_domain = RecursiveBacktracker._update_other_domain(
-                            value, constraint
-                        )
-                        old_domains.append((other_word, other_word.domain))
-                        new_domains.append((other_word, updated_domain))
-                        if self.forward_checking and len(updated_domain) == 0:
-                            dead_end = True
-                            # print("Forward looking has detected a dead end; avoiding it.")
-                            break  # Breaks out of the for constraint loop (only) (I think)
+                dead_end, new_domains, old_domains = self._generate_new_domains(
+                    var, value
+                )
 
                 if not dead_end:
-                    var.letters = value
-                    used_values.append(value)
+                    self._apply_assignment(var, value, new_domains)
 
-                    for word, new_domain in new_domains:
-                        word.domain = new_domain
+                    result = self.recursive_backtracking(assignment)
 
-                    result = self.recursive_backtracking(assignment, used_values)
                     if result != None:
                         return result
-
-                    var.letters = None
-                    used_values.remove(value)
-
-                    for word, old_domain in old_domains:
-                        word.domain = old_domain
+                    else:
+                        self._undo_assignment(var, value, old_domains)
 
         return None
+
+    def _generate_new_domains(self, var: Word, value: str):
+        old_domains = []
+        new_domains = []
+        dead_end = False
+
+        for constraint in var.constraints:
+            other_word = constraint.other_word
+            if constraint.other_word.letters == None:
+                updated_domain = RecursiveBacktracker._update_other_domain(
+                    value, constraint
+                )
+                old_domains.append((other_word, other_word.domain))
+                new_domains.append((other_word, updated_domain))
+                if self.forward_checking and len(updated_domain) == 0:
+                    dead_end = True
+                    self.dead_ends_avoided += 1
+                    break
+        return dead_end, new_domains, old_domains
+
+    def _apply_assignment(self, var: Word, value: str, new_domains):
+        var.letters = value
+        self.used_values.append(value)
+
+        for word, new_domain in new_domains:
+            word.domain = new_domain
+
+    def _undo_assignment(self, var: Word, value: str, old_domains):
+        var.letters = None
+        self.used_values.remove(value)
+
+        for word, old_domain in old_domains:
+            word.domain = old_domain
 
     @staticmethod
     def _get_selection_function(heuristic: str) -> Callable[[List["Word"]], "Word"]:

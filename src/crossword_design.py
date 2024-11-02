@@ -1,4 +1,6 @@
 import argparse
+import random
+import time
 from typing import List
 
 import domain_split as ds
@@ -40,14 +42,21 @@ def process_args():
         help="Enable sorting variable domains based on letter frequency analysis.",
     )
     parser.add_argument(
-        "--show_stats",
+        "--hide_stats",
         action="store_true",
         help="Enable display of additional stats after a solution is found.",
+    )
+    parser.add_argument(
+        "--randomize",
+        action="store_true",
+        help="Randomize the order of domain elements to get a different solution each run - Warning: Wildly varying runtimes",
     )
     return parser.parse_args()
 
 
 def main():
+    start_time = time.time()
+
     args = process_args()
 
     word_list = ds.split_words(args.words)
@@ -60,7 +69,40 @@ def main():
         domain_index = variable.length
         variable.domain = word_list[domain_index][:]
 
+        if args.randomize:
+            random.shuffle(variable.domain)
+
         if args.sort_domains:
+
+            letter_frequencies = [
+                43.31,
+                10.56,
+                23.14,
+                17.25,
+                56.88,
+                9.24,
+                12.59,
+                15.31,
+                38.45,
+                1.00,
+                5.61,
+                27.98,
+                15.36,
+                33.92,
+                36.51,
+                16.14,
+                1.00,
+                38.64,
+                29.23,
+                35.43,
+                18.51,
+                5.13,
+                6.57,
+                1.48,
+                9.06,
+                1.39,
+            ]
+
             critical_indices = []
 
             for constraint in variable.constraints:
@@ -80,18 +122,14 @@ def main():
                 return value
 
             variable.domain.sort(
-                key=lambda s: evaluate_string(
-                    s, critical_indices, rb.letter_frequencies
-                ),
+                key=lambda s: evaluate_string(s, critical_indices, letter_frequencies),
                 reverse=True,
             )
 
     print("Finished initializing variables, constraints, and domains.")
 
-    used_values = []
-
     print("Commencing recursive backtracking. Stand by...")
-    solution = backtracker.recursive_backtracking(variables, used_values)
+    solution = backtracker.recursive_backtracking(variables)
 
     if solution != "Failure" and solution != None:
         print("Solution found!")
@@ -99,8 +137,14 @@ def main():
         print("Failure! All assignments exhausted, but no solution was found.")
         return
 
+    runtime = time.time() - start_time
+
     visualizer = Visualizer(solution)
     print(visualizer)
+
+    if not args.hide_stats:
+        print(backtracker)
+        print(f"Elapsed time: {runtime:.3f} seconds.\n")
 
 
 if __name__ == "__main__":

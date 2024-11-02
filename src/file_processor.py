@@ -41,7 +41,7 @@ def read_variables(filepath: str):
             variables.append(new_variable)
 
         sorted_variables = sorted(
-            variables, key=lambda var: (var.number, var.orientation)
+            variables, key=lambda var: (var.orientation, var.number)
         )
 
     return sorted_variables
