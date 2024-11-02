@@ -189,13 +189,14 @@ class RecursiveBacktracker:
                 selection.append(word)
 
         most_constraints = -1
-        final_choice = None
+        final_choice = selection[0]
 
-        for choice in selection:
-            constraint_count = len(choice.constraints)
-            if constraint_count > most_constraints:
-                most_constraints = constraint_count
-                final_choice = choice
+        if len(selection) > 1:
+            for choice in selection:
+                constraint_count = len(choice.constraints)
+                if constraint_count > most_constraints:
+                    most_constraints = constraint_count
+                    final_choice = choice
 
         return final_choice
 
