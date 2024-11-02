@@ -1,8 +1,7 @@
 from __future__ import annotations
 
+from typing import List, Tuple
 
-from typing import Tuple
-from typing import List
 
 class Constraint:
     def __init__(self, other_word: Word, index_self: int, index_other: int):
@@ -10,7 +9,6 @@ class Constraint:
         self.index_self = index_self
         self.index_other = index_other
 
-    
     def __str__(self):
         output = ""
         output += f"Constraint with {self.other_word} w/ self-index {self.index_self} and other-index {self.index_other}"
@@ -21,7 +19,7 @@ class Word:
     def __init__(
         self,
         number: int,
-        orientation: bool, # 0/False = across; 1/True = down
+        orientation: bool,  # 0/False = across; 1/True = down
         start_location: Tuple[int, int],
         length: int,
         letters: str = None,
@@ -34,7 +32,7 @@ class Word:
         self.letters = letters
         self.constraints = []
         self.domain = domain
-    
+
     def __str__(self):
         output = ""
         if self.orientation:

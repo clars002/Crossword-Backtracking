@@ -1,5 +1,7 @@
 from typing import List
+
 from word import Word
+
 
 class Visualizer:
     def __init__(self, assignment: List[Word] = [], rows: int = 0, columns: int = 0):
@@ -19,7 +21,6 @@ class Visualizer:
                 elif value.orientation == 0 and endpoint > self.columns:
                     self.columns = endpoint
 
-        
         self.grid = [[" "] * self.columns for _ in range(self.rows)]
 
         for value in self.assignment:
@@ -38,12 +39,11 @@ class Visualizer:
                 def increment_space():
                     nonlocal current_row
                     current_row += 1
-        
+
             for i in range(value.length):
                 self.grid[current_row][current_col] = value.letters[i]
                 increment_space()
-        
-    
+
     def __str__(self):
         if self.grid == None:
             self.create_grid()

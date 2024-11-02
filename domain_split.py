@@ -1,15 +1,17 @@
 import os
 
+
 def split_words(path_to_list: str, write_to_files: bool = False):
-    word_lists = [[] for i in range(46)] # apparently the longest word in the English dictionary is 45 letters long
-                
+    word_lists = [
+        [] for i in range(46)
+    ]  # apparently the longest word in the English dictionary is 45 letters long
+
     with open(path_to_list, "r") as file:
         for line in file:
             stripped = line.strip()
             length = len(stripped)
             word_lists[length].append(stripped)
 
-    
     base_name = os.path.splitext(os.path.basename(path_to_list))[0]
 
     if write_to_files:

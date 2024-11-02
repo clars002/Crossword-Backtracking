@@ -1,5 +1,6 @@
 import domain_split as ds
 
+
 def main():
     my_words = ds.split_words("docs/Words.txt", True)
 

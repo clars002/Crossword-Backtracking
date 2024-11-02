@@ -1,5 +1,7 @@
-from word import Word
 from typing import List
+
+from word import Word
+
 
 class Puzzle:
     def __init__(self, rows: int, columns: int, words: List[Word] = []):
@@ -9,7 +11,6 @@ class Puzzle:
 
         self.grid = None
         self.clear_grid()
-
 
     def __str__(self):
         for word in self.words:
@@ -61,7 +62,6 @@ class Puzzle:
 
         return True
 
-    
     def remove(self, value: Word):
         self.words.remove(value)
 
@@ -71,7 +71,6 @@ class Puzzle:
             self.try_insert(word, False)
 
         return True
-    
 
     def clear_grid(self):
         self.grid = [[" "] * self.columns for _ in range(self.rows)]

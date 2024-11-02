@@ -1,12 +1,40 @@
 import copy
 from typing import List
-from word import Word, Constraint
-from puzzle import Puzzle
-from typing import List
-import domain_split as ds
-from visualizer import Visualizer
 
-letter_frequencies = [43.31, 10.56, 23.14, 17.25, 56.88, 9.24, 12.59, 15.31, 38.45, 1.00, 5.61, 27.98, 15.36, 33.92, 36.51, 16.14, 1.00, 38.64, 29.23, 35.43, 18.51, 5.13, 6.57, 1.48, 9.06, 1.39]
+import domain_split as ds
+from puzzle import Puzzle
+from visualizer import Visualizer
+from word import Constraint, Word
+
+letter_frequencies = [
+    43.31,
+    10.56,
+    23.14,
+    17.25,
+    56.88,
+    9.24,
+    12.59,
+    15.31,
+    38.45,
+    1.00,
+    5.61,
+    27.98,
+    15.36,
+    33.92,
+    36.51,
+    16.14,
+    1.00,
+    38.64,
+    29.23,
+    35.43,
+    18.51,
+    5.13,
+    6.57,
+    1.48,
+    9.06,
+    1.39,
+]
+
 
 def main():
     the_puzzle = Puzzle(11, 12)
@@ -86,18 +114,23 @@ def main():
 
         # print(f"Critical indices for {variable}: {critical_indices}")
 
-        def evaluate_string(s: str, critical_indices: List[int], char_values: List[float]):
+        def evaluate_string(
+            s: str, critical_indices: List[int], char_values: List[float]
+        ):
             value = 0
 
             for i in critical_indices:
                 critical_char = s[i]
-                alpha_position = ord(critical_char) - ord('a') # ChatGPT line
+                alpha_position = ord(critical_char) - ord("a")  # ChatGPT line
                 value += char_values[alpha_position]
-            
+
             return value
 
-
-        sorted_variable_domain = sorted(variable_domain, key=lambda s: evaluate_string(s, critical_indices, letter_frequencies), reverse=True)
+        sorted_variable_domain = sorted(
+            variable_domain,
+            key=lambda s: evaluate_string(s, critical_indices, letter_frequencies),
+            reverse=True,
+        )
 
         variable.domain = sorted_variable_domain
 
@@ -105,10 +138,8 @@ def main():
         # print("-------------------------------------------------------------------------")
         # for string in variable.domain[:10]:
         #     print(string)
-    
+
     print("Finished initializing variables, constraints, and domains.")
-
-
 
     used_values = []
 
@@ -129,12 +160,12 @@ def main():
 
     # for word in word_list[0]:
     #     print(word)
-    
+
 
 # def recursive_backtracking(assignment: List[Word], puzzle: Puzzle, word_list: List[List[Word]]):
 #     if is_complete(assignment):
 #         return assignment
-    
+
 #     var = first_unassigned(assignment)
 #     domain_index = var.length
 #     # print(f"DOMAIN INDEX: {domain_index}")
@@ -157,8 +188,8 @@ def recursive_backtracking(assignment: List[Word], used_values: List[str]):
         return assignment
 
     var = minimum_remaining_values(assignment)
-    
-    for value in (v for v in var.domain if v not in used_values): # ChatGPT line
+
+    for value in (v for v in var.domain if v not in used_values):  # ChatGPT line
         # print(f"Current value: {value}")
         dead_end = False
 
@@ -175,14 +206,14 @@ def recursive_backtracking(assignment: List[Word], used_values: List[str]):
                     else:
                         dead_end = True
                         print("Forward looking has detected a dead end; avoiding it.")
-                        break # Breaks out of the for constraint loop (only) (I think)
-                    
+                        break  # Breaks out of the for constraint loop (only) (I think)
+
             if not dead_end:
                 var.letters = value
                 used_values.append(value)
 
                 for word, new_domain in new_domains:
-                    word.domain = new_domain         
+                    word.domain = new_domain
 
                 result = recursive_backtracking(assignment, used_values)
                 if result != None:
@@ -190,9 +221,9 @@ def recursive_backtracking(assignment: List[Word], used_values: List[str]):
 
                 var.letters = None
                 used_values.remove(value)
-                
+
                 for word, old_domain in old_domains:
-                    word.domain = old_domain   
+                    word.domain = old_domain
 
     return None
 
@@ -200,7 +231,10 @@ def recursive_backtracking(assignment: List[Word], used_values: List[str]):
 def satisfies_constraints(value: str, variable: Word):
     for constraint in variable.constraints:
         other_value = constraint.other_word.letters
-        if other_value != None and value[constraint.index_self] != other_value[constraint.index_other]:
+        if (
+            other_value != None
+            and value[constraint.index_self] != other_value[constraint.index_other]
+        ):
             return False
     return True
 
@@ -213,7 +247,9 @@ def update_other_domain(value: str, constraint: Constraint):
 
     # print(f"Length before: {len(old_domain)}")
 
-    new_domain = [value for value in old_domain if value[critical_index] == critical_char]
+    new_domain = [
+        value for value in old_domain if value[critical_index] == critical_char
+    ]
 
     # print(f"Length after: {len(new_domain)}")
 
@@ -243,7 +279,7 @@ def minimum_remaining_values(assignment: List[Word]):
         if minimum_remaining == -1 or remaining < minimum_remaining:
             minimum_remaining = remaining
             selection = word
-    
+
     return selection
 
 
@@ -256,7 +292,7 @@ def degree_heuristic(assignment: List[Word]):
         if constraint_count > most_constraints:
             most_constraints = constraint_count
             selection = word
-    
+
     return selection
 
 
@@ -274,7 +310,6 @@ def minimum_remaining_and_degree(assignment: List[Word]):
         if remaining == minimum_remaining:
             selection.append(word)
 
-    
     most_constraints = -1
     final_choice = None
 

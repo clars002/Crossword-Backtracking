@@ -1,5 +1,6 @@
 import file_processor as fp
 
+
 def main():
     puzzle_path = "docs/puzzle3.txt"
 
@@ -9,6 +10,7 @@ def main():
         print(variable)
 
     fp.generate_constraints(the_variables)
+
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,8 @@
 import copy
 from typing import List
-from word import Word
+
 from puzzle import Puzzle
+from word import Word
 
 
 def main():
