@@ -160,6 +160,8 @@ def recursive_backtracking(assignment: List[Word], used_values: List[str]):
     
     for value in (v for v in var.domain if v not in used_values): # ChatGPT line
         # print(f"Current value: {value}")
+        dead_end = False
+
         if satisfies_constraints(value, var):
             old_domains = []
             new_domains = []
@@ -171,24 +173,26 @@ def recursive_backtracking(assignment: List[Word], used_values: List[str]):
                     if len(updated_domain) != 0:
                         new_domains.append((other_word, updated_domain))
                     else:
+                        dead_end = True
                         print("Forward looking has detected a dead end; avoiding it.")
                         break # Breaks out of the for constraint loop (only) (I think)
+                    
+            if not dead_end:
+                var.letters = value
+                used_values.append(value)
 
-            var.letters = value
-            used_values.append(value)
+                for word, new_domain in new_domains:
+                    word.domain = new_domain         
 
-            for word, new_domain in new_domains:
-                word.domain = new_domain         
+                result = recursive_backtracking(assignment, used_values)
+                if result != None:
+                    return result
 
-            result = recursive_backtracking(assignment, used_values)
-            if result != None:
-                return result
-
-            var.letters = None
-            used_values.remove(value)
-            
-            for word, old_domain in old_domains:
-                word.domain = old_domain   
+                var.letters = None
+                used_values.remove(value)
+                
+                for word, old_domain in old_domains:
+                    word.domain = old_domain   
 
     return None
 
