@@ -5,7 +5,6 @@ from typing import List
 
 import domain_split as ds
 import file_processor as fp
-from puzzle import Puzzle
 from visualizer import Visualizer
 from word import Constraint, Word
 
@@ -175,16 +174,14 @@ def recursive_backtracking(assignment: List[Word], used_values: List[str]):
 
 def process_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('puzzle_path', type=str, help='Path to the puzzle input file.')
+    parser.add_argument("puzzle_path", type=str, help="Path to the puzzle input file.")
     return parser.parse_args()
 
 
 def main():
     args = process_args()
 
-    the_puzzle = Puzzle(11, 12)
-
-    word_list = ds.split_words("docs/words/words.txt")
+    word_list = ds.split_words("resources/words/words.txt")
 
     variables = fp.read_variables(args.puzzle_path)
     fp.generate_constraints(variables)

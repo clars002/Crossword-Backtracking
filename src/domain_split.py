@@ -20,7 +20,7 @@ def split_words(path_to_list: str, write_to_files: bool = False):
             if len(current_list) == 0:
                 continue
 
-            new_file_path = "docs/generated/" + base_name + f"_len_{i}" + ".txt"
+            new_file_path = "resources/generated/" + base_name + f"_len_{i}" + ".txt"
             if not os.path.isfile(new_file_path):
                 with open(new_file_path, "w") as new_file:
                     for word in current_list:
