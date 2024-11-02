@@ -71,15 +71,15 @@ def generate_constraints(variables: List[Word]):
                 grid[i][j][1][0].constraints.append(constraint_b)
 
     
-    for variable in variables:
-        print(f"Variable {variable} has the following constraints:")
-        print(f"-------------------------------------------------------------------------")
+    # for variable in variables:
+    #     print(f"Variable {variable} has the following constraints:")
+    #     print(f"-------------------------------------------------------------------------")
 
-        for constraint in variable.constraints:
-            print(constraint)
+    #     for constraint in variable.constraints:
+    #         print(constraint)
         
-        print("--------------------------------------------------------------------------")
-        print("")
+    #     print("--------------------------------------------------------------------------")
+    #     print("")
     
     # for row in grid:
     #     for col in row:
