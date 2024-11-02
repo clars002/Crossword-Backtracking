@@ -10,14 +10,13 @@ class Visualizer:
 
     def create_grid(self):
         # Calculate puzzle width (rows) and height (columns)
-        # TODO: This logic seems not to work
         if self.rows < 1 or self.columns < 1:
             for value in self.assignment:
-                endpoint = value.length + value.start_location[value.orientation]
+                endpoint = value.length + value.start_location[not value.orientation]
 
-                if value.orientation == 0 and endpoint > self.rows:
+                if value.orientation == 1 and endpoint > self.rows:
                     self.rows = endpoint
-                elif value.orientation == 1 and endpoint > self.columns:
+                elif value.orientation == 0 and endpoint > self.columns:
                     self.columns = endpoint
 
         

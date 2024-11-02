@@ -10,6 +10,12 @@ class Constraint:
         self.index_self = index_self
         self.index_other = index_other
 
+    
+    def __str__(self):
+        output = ""
+        output += f"Constraint with {self.other_word} w/ self-index {self.index_self} and other-index {self.index_other}"
+        return output
+
 
 class Word:
     def __init__(

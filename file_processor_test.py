@@ -8,6 +8,7 @@ def main():
     for variable in the_variables:
         print(variable)
 
+    fp.generate_constraints(the_variables)
 
 if __name__ == "__main__":
     main()
