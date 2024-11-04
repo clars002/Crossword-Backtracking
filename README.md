@@ -39,3 +39,9 @@ There are a total of seven (7) optional arguments:
 `--randomize`
   randomizes domain order for each variable (warning: causes wildly
   varying runtimes)
+
+The default execution (when no additional args are supplied) is equivalent to:
+`python src/crossword_design.py --puzzle resources/puzzles/heart.txt --words resources/words/words.txt --heuristic mrv`
+
+## File Structure
+Three (3) puzzles are supplied in resources/puzzles, namely mini.txt, 
