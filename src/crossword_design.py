@@ -130,6 +130,8 @@ def initialize_domains(
 
         if sort_domains:
 
+            # This data was found at:
+            # www3.nd.edu/~busiforc/handouts/cryptography/letterfrequencies.html
             letter_frequencies = [
                 43.31,
                 10.56,
@@ -159,12 +161,13 @@ def initialize_domains(
                 1.39,
             ]
 
+            # Find constraint-relevant indices for this variable:
             critical_indices = []
-
             for constraint in variable.constraints:
                 critical_index = constraint.index_self
                 critical_indices.append(critical_index)
 
+            # Evaluation function to score candidate strings
             def evaluate_string(
                 s: str, critical_indices: List[int], char_values: List[float]
             ):
@@ -177,6 +180,7 @@ def initialize_domains(
 
                 return value
 
+            # Sort descending so that higher-scoring strings appear first
             variable.domain.sort(
                 key=lambda s: evaluate_string(s, critical_indices, letter_frequencies),
                 reverse=True,
