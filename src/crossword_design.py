@@ -72,7 +72,7 @@ def process_args():
     parser.add_argument(
         "--hide_stats",
         action="store_true",
-        help="Enable display of additional stats after a solution is found.",
+        help="Disable display of additional stats after a solution is found.",
     )
     parser.add_argument(
         "--randomize",
