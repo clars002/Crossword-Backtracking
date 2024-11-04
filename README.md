@@ -9,7 +9,7 @@ The main driver is the main function in src/crossword.design.py.
 Just execute that file with python, e.g.
 (from the root directory): `python src/crossword.design.py`
 ### Args/Options
-There are a total of seven (7) optional arguments:
+There are a total of seven (7) optional arguments:  
 `--puzzle [PUZZLE]`
   where [PUZZLE] is the path to a text file containing a list
   of variables that together specify the puzzle's structure
