@@ -57,6 +57,7 @@ Word lists should be solely populated with one word per line and can contain an 
 The general line for a puzzle file should look like the following:  
 `a,b,c,d,e`  
 > where a is the variable's number (specified by the puzzle), b is its orientation (0 for across, 1 for down), c is its starting x coordinate, d is its starting y coordinate, and e is its length.
+
 Predetermined letters can be added as extra constraints by first adding the following line:
 `[Letters]`
 followed by an arbitrary number of lines of the form:
