@@ -63,3 +63,5 @@ Predetermined letters can be added as extra constraints by first adding the foll
 followed by an arbitrary number of lines of the form:
 `a,b,c`
 > where a and b are the are the respective x and y coordinates, and c is the letter itself (lowercase is expected).
+
+See the files in resources/puzzles for examples.
