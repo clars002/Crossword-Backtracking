@@ -46,3 +46,19 @@ The default execution (when no additional args are supplied) is equivalent to:
 ## File Structure
 Three (3) puzzles are supplied in resources/puzzles, namely mini.txt, larger.txt, and heart.txt, with the first two being relatively trivial/simple compared to the last.  
 Two (2) word lists are supplied in resources/words, namely mini_words.txt and words.txt, with the latter being fairly comprehensive and the former being extremely small (and insufficient for all of the supplied puzzles except mini.txt).
+
+### Supplying Your Own Puzzles/Word Lists
+Puzzles and word lists can be anywhere, so long as you supply the requisite paths via the args discussed above.
+
+Both are expected to be text files.  
+Word lists should be solely populated with one word per line and can contain an arbitrary number of words. Note that the program does not expect, and cannot account for, words longer than 45 characters long. Words are expected to be lowercase only with no capitalization.
+
+
+The general line for a puzzle file should look like the following:  
+`a,b,c,d,e`  
+> where a is the variable's number (specified by the puzzle), b is its orientation (0 for across, 1 for down), c is its starting x coordinate, d is its starting y coordinate, and e is its length.
+Predetermined letters can be added as extra constraints by first adding the following line:
+`[Letters]`
+followed by an arbitrary number of lines of the form:
+`a,b,c`
+> where a and b are the are the respective x and y coordinates, and c is the letter itself (lowercase is expected).
