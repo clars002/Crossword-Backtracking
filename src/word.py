@@ -40,6 +40,9 @@ class Word:
         else:
             orient = "Across"
 
-        output += f"{self.number} {orient}: {self.letters} - starting at {self.start_location}; length {self.length}"
+        if self.number != 0:
+            output += f"{self.number} {orient}: {self.letters} - starting at {self.start_location}; length {self.length}"
+        else:
+            output += f"[Predetermined]: {self.letters} at {self.start_location}"
 
         return output

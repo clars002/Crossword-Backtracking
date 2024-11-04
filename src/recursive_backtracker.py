@@ -26,9 +26,7 @@ class RecursiveBacktracker:
 
     def __str__(self):
         output = f"Stats:\n"
-        output += (
-            f"--------------------------------------------------------------------\n"
-        )
+        output += f"-----------------------------------------------------\n"
         output += f"Detected and avoided {self.dead_ends_avoided} dead ends.\n"
         output += f"Executed {self.recursive_calls} recursive calls.\n"
         output += f"Tried a total of {self.values_tried} values."

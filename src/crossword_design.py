@@ -1,3 +1,23 @@
+"""
+Finds a solution to a crossword constraint satisfaction problem.
+
+Puzzles are represented in text form. Three are available in
+resources/puzzles to choose from (mini.txt, larger.txt, heart.txt).
+There are two word lists in resources/words (mini_words.txt and
+words.txt).
+The program is executed by running this file (src/crossword_design.py)
+with any arguments.
+
+Command line arguments:
+    --puzzle [PUZZLE]: Path to a text representation of the puzzle to be solved.
+    --words [WORDS]: Path to the list of possible words.
+    --heuristic [HEURISTIC]: A string specifying the value selection heuristic.
+    --disable_forward_check: Disables forward checking.
+    --sort_domains: Sorts the value domains based on letter frequency analysis.
+    --hide_stats: Hides additional stats displayed after the solution.
+    --randomize: Randomizes domain word order (wildly varying runtimes).
+"""
+
 import argparse
 import random
 import time
@@ -8,10 +28,18 @@ import file_processor as fp
 import recursive_backtracker as rb
 from recursive_backtracker import RecursiveBacktracker
 from visualizer import Visualizer
+from word import Word
 
 
 # ChatGPT Note: I learned how to use argparse with its help but wrote the code myself.
 def process_args():
+    """
+    Parses arguments from the CLI.
+
+    Returns:
+        A Namespace object where attributes correspond to the
+        defined/provided args.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--puzzle",
@@ -54,25 +82,53 @@ def process_args():
     return parser.parse_args()
 
 
-def main():
-    start_time = time.time()
+def initialize_domains(
+    variables: List[Word],
+    word_lists: List[List[str]],
+    randomize: bool = False,
+    sort_domains: bool = False,
+):
+    """
+    Assigns each variable an initial domain.
 
-    args = process_args()
+    By default, this is simply a copy of all words of the correct
+    length, in the same order they are provided in word_lists.
+    Optionally, this order can be randomized and/or sorted based on
+    letter frequency analysis (commonness of letters appearing in
+    constraint-relevant indexes).
 
-    word_list = ds.split_words(args.words)
-    variables = fp.read_variables(args.puzzle)
-    fp.generate_constraints(variables)
+    Args:
+        variables (List[Word]):
+            The list of variables whose domains will be  initialized.
+        word_lists (List[List[str]]):
+            A 2D array, where each row corresponds to a word length
+            and each column contains a word of that length.
+            Note: This can be generated from a master word list
+            using the domain_split module.
+        randomize (bool, optional):
+            Whether to randomize the order of words in each domain.
+            Defaults to False.
+        sort_domains (bool, optional):
+            Whether to sort domains based on letter frequency analysis.
+            Words with more common letters in constraint-relevant
+            indexes will be placed earlier in the list.
+            Defaults to False.
 
-    backtracker = RecursiveBacktracker(args.heuristic, args.disable_forward_check)
+    Returns:
+        bool: True to indicate success.
 
+    Side Effects:
+        Changes the domain member of each variable in the supplied
+        variables.
+    """
     for variable in (v for v in variables if v.letters == None):
         domain_index = variable.length
-        variable.domain = word_list[domain_index][:]
+        variable.domain = word_lists[domain_index][:]
 
-        if args.randomize:
+        if randomize:
             random.shuffle(variable.domain)
 
-        if args.sort_domains:
+        if sort_domains:
 
             letter_frequencies = [
                 43.31,
@@ -126,15 +182,47 @@ def main():
                 reverse=True,
             )
 
+    return True
+
+
+def main():
+    """
+    Carries out the recursive backtracking search & prints the results.
+
+    The main driver. Coordinates initialization of variables,
+    constraints, and domains, performs the recursive backtracking
+    search, and outputs the results, all according to provided CLI
+    args.
+
+    Side effects:
+        Prints a list of the final variable assignments, a
+        visualization of the solved puzzle, and statistics
+        (unless disabled by CLI arg).
+    """
+    start_time = time.time()
+
+    args = process_args()
+
+    word_list = ds.split_words(args.words)
+
+    variables = fp.read_variables(args.puzzle)
+
+    fp.generate_constraints(variables)
+
+    initialize_domains(variables, word_list, args.randomize, args.sort_domains)
+
+    backtracker = RecursiveBacktracker(args.heuristic, args.disable_forward_check)
+
     print("Finished initializing variables, constraints, and domains.")
 
     print("Commencing recursive backtracking. Stand by...")
+
     solution = backtracker.recursive_backtracking(variables)
 
     if solution != "Failure" and solution != None:
         print("Solution found!")
     else:
-        print("Failure! All assignments exhausted, but no solution was found.")
+        print("Failure! All possible assignments exhausted, but no solution was found.")
         return
 
     runtime = time.time() - start_time
@@ -145,6 +233,8 @@ def main():
     if not args.hide_stats:
         print(backtracker)
         print(f"Elapsed time: {runtime:.3f} seconds.\n")
+
+    return
 
 
 if __name__ == "__main__":

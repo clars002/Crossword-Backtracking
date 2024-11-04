@@ -95,28 +95,4 @@ def generate_constraints(variables: List[Word]):
                 grid[i][j][0][0].constraints.append(constraint_a)
                 grid[i][j][1][0].constraints.append(constraint_b)
 
-    # for variable in variables:
-    #     print(f"Variable {variable} has the following constraints:")
-    #     print(f"-------------------------------------------------------------------------")
-
-    #     for constraint in variable.constraints:
-    #         print(constraint)
-
-    #     print("--------------------------------------------------------------------------")
-    #     print("")
-
-    # for row in grid:
-    #     for col in row:
-    #         print("[", end="")
-    #         for word in col:
-    #             orientation_letter = ""
-    #             if word.orientation == 0:
-    #                 orientation_letter = "a"
-    #             else:
-    #                 orientation_letter = "d"
-
-    #             print(f"{word.number}{orientation_letter},", end="")
-    #         print("]", end="")
-    #     print("")
-
     return
